@@ -2,8 +2,8 @@ import React, { useEffect, useRef, useState } from 'react';
 import classNames from 'classnames';
 import { UR } from 'getstream';
 
-import { Feed, useFeedContext, DefaultAT, DefaultUT } from '../context';
-import { smartRender, ElementOrComponentOrLiteralType, PropsWithElementAttributes } from '../utils';
+import { DefaultAT, DefaultUT, Feed, useFeedContext } from '../context';
+import { ElementOrComponentOrLiteralType, PropsWithElementAttributes, smartRender } from '../utils';
 import { useOnClickOutside } from '../hooks/useOnClickOutside';
 import { NotificationFeed, NotificationFeedProps } from './NotificationFeed';
 import { DropdownPanel, DropdownPanelProps } from './DropdownPanel';
@@ -50,14 +50,17 @@ const NotificationDropdownInner = <
     feed.refreshUnreadUnseen();
   }, []);
 
+  const onIconBadgeClick = () => {
+    setOpen((open) => !open);
+  };
+
   return (
-    <div className={classNames('raf-notification-dropdown', className)} style={style}>
-      <IconBadge showNumber unseen={feed.unseen} hidden={!feedProps.notify} onClick={() => setOpen(true)}>
+    <div ref={dropdownRef} className={classNames('raf-notification-dropdown', className)} style={style}>
+      <IconBadge showNumber unseen={feed.unseen} hidden={!feedProps.notify} onClick={onIconBadgeClick}>
         {Icon && smartRender(Icon)}
       </IconBadge>
 
       <div
-        ref={dropdownRef}
         style={{ maxWidth: width }}
         className={`raf-notification-dropdown__panel${open ? ' raf-notification-dropdown__panel--open' : ''}${
           right ? ' raf-notification-dropdown__panel--right' : ''
@@ -65,7 +68,7 @@ const NotificationDropdownInner = <
       >
         {open && (
           <DropdownPanel arrow right={right} Header={Header} Footer={Footer}>
-            <NotificationFeed {...feedProps} />
+            <NotificationFeed closeNotificationDropdown={() => setOpen(false)} {...feedProps} />
           </DropdownPanel>
         )}
       </div>

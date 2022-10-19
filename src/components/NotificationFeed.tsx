@@ -37,6 +37,8 @@ type NotificationFeedInnerProps<
    * #FeedPlaceholder (Component)#
    */
   Placeholder: ElementOrComponentOrLiteralType<FeedPlaceholderProps>;
+  /** Callback to close the notification dropdown  */
+  closeNotificationDropdown?: () => void;
   /** Read options for the API client (eg. limit, ranking, ...) */
   options?: FeedProps['options'];
 };
@@ -79,6 +81,7 @@ const NotificationFeedInner = <
   Notifier,
   Paginator,
   Placeholder,
+  closeNotificationDropdown,
   options,
 }: NotificationFeedInnerProps<UT, AT, CT, RT, CRT>) => {
   const feed = useFeedContext<UT, AT, CT, RT, CRT, PT>();
@@ -113,6 +116,7 @@ const NotificationFeedInner = <
             children: feed.activityOrder.map((id) =>
               smartRender<NotificationProps<UT, AT, CT, RT, CRT>>(Group, {
                 activityGroup: feed.activities.get(id)?.toJS() as NotificationActivityEnriched<UT, AT, CT, RT, CRT>,
+                closeNotificationDropdown,
                 // @ts-expect-error
                 key: id,
               }),
@@ -136,6 +140,7 @@ export const NotificationFeed = <
   options,
   userId,
   analyticsLocation,
+  closeNotificationDropdown,
   doFeedRequest,
   doActivityDeleteRequest,
   doChildReactionAddRequest,
@@ -167,6 +172,7 @@ export const NotificationFeed = <
       doReactionsFilterRequest={doReactionsFilterRequest}
     >
       <NotificationFeedInner<UT, AT, CT, RT, CRT, PT>
+        closeNotificationDropdown={closeNotificationDropdown}
         Group={Group}
         LoadingIndicator={LoadingIndicator}
         Notifier={Notifier}

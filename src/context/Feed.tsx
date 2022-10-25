@@ -182,7 +182,7 @@ export function Feed<
       manager.props.options = optionsReference.current;
     }
 
-    manager.refresh();
+    manager.refresh({ mark_seen: false });
   }, [manager, optionsReference.current]);
 
   if (!manager) return null;

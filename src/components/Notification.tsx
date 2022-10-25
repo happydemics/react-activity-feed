@@ -25,6 +25,8 @@ export type NotificationProps<
 > = PropsWithElementAttributes<{
   /** The activity group to display in this notification */
   activityGroup: NotificationActivityEnriched<UT, AT, CT, RT, CRT>;
+  /** Callback to close the notification dropdown  */
+  closeNotificationDropdown?: () => void;
   /** Callback to call when clicking on a notification */
   onClickNotification?: (activityGroup: NotificationActivityEnriched<UT, AT, CT, RT, CRT>) => void;
   /** Callback to call when clicking on a user in the notification */

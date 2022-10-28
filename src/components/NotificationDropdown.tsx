@@ -44,7 +44,20 @@ const NotificationDropdownInner = <
   const feed = useFeedContext<UT, AT, CT, RT, CRT, PT>();
   const [open, setOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
-  useOnClickOutside(dropdownRef, () => setOpen(false), open);
+
+  const onMarkAsSeen = async () => {
+    await feed.refresh();
+    feed.refreshUnreadUnseen();
+  };
+
+  useOnClickOutside(
+    dropdownRef,
+    () => {
+      setOpen(false);
+      onMarkAsSeen();
+    },
+    open,
+  );
 
   useEffect(() => {
     feed.refreshUnreadUnseen();
@@ -52,6 +65,9 @@ const NotificationDropdownInner = <
 
   const onIconBadgeClick = () => {
     setOpen((open) => !open);
+    if (!open) {
+      onMarkAsSeen();
+    }
   };
 
   return (
@@ -68,7 +84,11 @@ const NotificationDropdownInner = <
       >
         {open && (
           <DropdownPanel arrow right={right} Header={Header} Footer={Footer}>
-            <NotificationFeed closeNotificationDropdown={() => setOpen(false)} {...feedProps} />
+            <NotificationFeed
+              closeNotificationDropdown={() => setOpen(false)}
+              onMarkAsSeen={onMarkAsSeen}
+              {...feedProps}
+            />
           </DropdownPanel>
         )}
       </div>
@@ -100,7 +120,7 @@ export const NotificationDropdown = <
   const optionsWithDefaults = { ...options, mark_seen: options?.mark_seen ?? true };
 
   return (
-    <Feed<UT, AT, CT, RT, CRT, PT> {...feedProps} feedGroup={feedGroup} options={optionsWithDefaults}>
+    <Feed<UT, AT, CT, RT, CRT, PT> {...feedProps} feedGroup={feedGroup} options={{ ...options, mark_seen: false }}>
       <NotificationDropdownInner<UT, AT, CT, RT, CRT, PT>
         width={width}
         Footer={Footer}

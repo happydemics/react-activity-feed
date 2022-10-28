@@ -39,6 +39,8 @@ type NotificationFeedInnerProps<
   Placeholder: ElementOrComponentOrLiteralType<FeedPlaceholderProps>;
   /** Callback to close the notification dropdown  */
   closeNotificationDropdown?: () => void;
+  /** Callback to mark all notifications as seen */
+  onMarkAsSeen?: () => void;
   /** Read options for the API client (eg. limit, ranking, ...) */
   options?: FeedProps['options'];
 };
@@ -82,11 +84,15 @@ const NotificationFeedInner = <
   Paginator,
   Placeholder,
   closeNotificationDropdown,
+  onMarkAsSeen,
   options,
 }: NotificationFeedInnerProps<UT, AT, CT, RT, CRT>) => {
   const feed = useFeedContext<UT, AT, CT, RT, CRT, PT>();
 
-  const refreshFeed = () => feed.refresh(options);
+  const refreshFeed = async () => {
+    await feed.refresh(options);
+    onMarkAsSeen?.();
+  };
 
   useEffect(() => {
     return () => {
@@ -150,6 +156,7 @@ export const NotificationFeed = <
   doReactionsFilterRequest,
   feedGroup = 'notification',
   notify = false,
+  onMarkAsSeen,
   Group = Notification,
   Notifier = NewActivitiesNotification,
   Paginator = LoadMorePaginator,
@@ -178,6 +185,7 @@ export const NotificationFeed = <
         Notifier={Notifier}
         Paginator={Paginator}
         Placeholder={Placeholder}
+        onMarkAsSeen={onMarkAsSeen}
         options={options}
       />
     </Feed>

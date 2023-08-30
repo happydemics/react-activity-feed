@@ -39,7 +39,7 @@
     "noop": "echo ''",
     "size": "size-limit",
     "analyze": "size-limit --why",
-    "prepare": "yarn run build && husky install",
+    "prepare": "husky install",
     "preversion": "yarn install && yarn lint && yarn test",
     "version": "yarn docs-build && git add -A docs",
     "postversion": "git push && git push --tags && npm publish"
